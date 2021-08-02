@@ -74,12 +74,12 @@
 								case 1: 
 										newValue = document.createElement("input");
 										newValue.value = rowObj.description;
-								newValue.id = `edited-description-${rowObj.id}`;
+										newValue.id = `edited-description-${rowObj.id}`;
 										break;
 								case 2:
 										newValue = makePrioElement();
 										newValue.value = rowObj.priority;
-								newValue.id = `edited-priority-${rowObj.id}`;
+										newValue.id = `edited-priority-${rowObj.id}`;
 										break;
 								case 3:
 										newValue = document.createElement("input");
@@ -137,11 +137,10 @@
 				let rowId = createWithContent("td", row.id);
 				let rowDesc = createWithContent("td", row.description);
 				let rowPrio = createWithContent("td", prioToString(row.priority));
-				let rowTime = createWithContent("td", new Date(row.time).toDateString());
+				let rowTime = createWithContent("td", new Date(row.time).toUTCString());
 				let rowCompleted = createWithContent("td", row.completed);
-				let rowEdit = document.createElement("td");
+				let rowButtons = document.createElement("td");
 				let editButton = createWithContent("button", "edit");
-				let rowDelete = document.createElement("td");
 				let deleteButton = createWithContent("button", "delete");
 				deleteButton.addEventListener ("click", (event) => {
 						tr.remove();
@@ -157,18 +156,17 @@
 						}).then(data => console.log(data))
 								.catch(err => console.error(err));
 				});
-				rowDelete.appendChild(deleteButton);
+				rowButtons.appendChild(deleteButton);
 				editButton.addEventListener("click", (event) => {
 						editRow(tr, row);
 				});
-				rowEdit.appendChild(editButton);
+				rowButtons.appendChild(editButton);
 				tr.appendChild(rowId);
 				tr.appendChild(rowDesc);
 				tr.appendChild(rowPrio);
 				tr.appendChild(rowTime);
 				tr.appendChild(rowCompleted);
-				tr.appendChild(rowEdit);
-				tr.appendChild(rowDelete);
+				tr.appendChild(rowButtons);
 				return tr;
 		}
 
