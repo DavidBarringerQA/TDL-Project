@@ -7,16 +7,9 @@
 		let submitButton = document.querySelector("#submit");
 		let form = document.querySelector("#newItem");
 		let addButton = document.querySelector("#addButton");
-		let nextId = 2;
+		let nextId = 1;
 
-		let dummy = {
-				id: 1,
-				description: "Test item",
-				priority: 2,
-				time: new Date().getTime(),
-				completed: false
-		}
-		list.appendChild(makeElement(dummy));
+		getData();
 
 		function createWithContent(type, content){
 				let element = document.createElement(type);
@@ -112,7 +105,7 @@
 						const data = editData(tr, rowObj.id);
 						console.log(data);
 						list.replaceChild(makeElement(data), tr);
-						fetch(`http://localhost:8080/${rowObj.id}`, {
+						fetch(`http://localhost:8000/${rowObj.id}`, {
 								method: "PUT",
 								headers: {
 										"Content-type": "application/json;"
@@ -123,10 +116,10 @@
 										console.error(response.status);
 								}
 								else{
-										response.json();
+										return response.json();
 								}
-						}).then(response => {
-								console.log(response);	
+						}).then(returnedData => {
+								console.log(returnedData);	
 						}).catch(err => console.log(err));
 				});
 				confirmRow.appendChild(confirmButton);
@@ -146,14 +139,14 @@
 				let deleteButton = createWithContent("button", "delete");
 				deleteButton.addEventListener ("click", (event) => {
 						tr.remove();
-						fetch(`http://localhost:8080/delete/${row.id}`, {
+						fetch(`http://localhost:8000/${row.id}`, {
 								method: "DELETE"
 						}).then(response => {
 								if(response.status !== 200){
 										console.error(response.status);
 								}
 								else {
-										response.json();
+										return response.json();
 								}
 						}).then(data => console.log(data))
 								.catch(err => console.error(err));
@@ -178,18 +171,18 @@
 				let demoData = body;
 				demoData.id = nextId++;
 				list.appendChild(makeElement(demoData));
-				fetch("http://localhost:8080/create", {
+				fetch("http://localhost:8000/create", {
 						method: "POST",
 						headers: {
-								"Content-type": "application/json;"
+								"Content-type": "application/json"
 						},
-						body: (JSON.stringify(body))
+						body: JSON.stringify(body)
 				}).then(response => {
 						if(response.status !== 201){
 								console.error(response.status);
 						}
 						else{
-								response.json();
+								return response.json();
 						}
 				}).then(data => {
 						console.log(data);	
@@ -207,19 +200,22 @@
 		}
 
 		function getData(){
-				fetch("http://localhost:8080/")
-						.then(respone => {
+				fetch("http://localhost:8000/")
+						.then(response => {
+								console.log(response);
 								if(response.status !== 200){
 										console.error(response.status);
 								}
 								else{
-										response.json();
+										return response.json();
 								}
 						}).then(data => {
+								console.log(data);
 								for(dataRow of data){
 										list.appendChild(makeElement(dataRow));
+										nextId = dataRow.id + 1;
 								}
-						});
+						}).catch(err => console.error(err));
 		}
 
 		addButton.addEventListener("click", (event) => {
