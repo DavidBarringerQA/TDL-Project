@@ -3,13 +3,14 @@
     <head>
         <meta charset="UTF-8"/>
         <title>To-Do List</title>
+        <link href="css/style.css" rel="stylesheet"/>
     </head>
     <body>
       <header>
           <h1>To-Do List</h1>
       </header>
-      <Button>Add item</Button>
-      <form action="">
+      <button id="addButton">Add item</button>
+      <form id="newItem" action="" class="hidden">
           <label for="description">Description</label>
           <input name="description" type="text" value="" id="description" required/>
           <label for="priority">Priority</label>
@@ -25,12 +26,13 @@
           <button id="submit">Submit</button>
       </form>
       <table id="list">
-        <tr>
+        <tr class="header">
             <th>Id</th>
             <th>Description</th>
             <th>Priority</th>
             <th>Due</th>
             <th>Completed</th>
+            <th></th>
         </tr>
       </table>
       <script src="js/index.js">
