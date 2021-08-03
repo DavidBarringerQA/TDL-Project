@@ -5,6 +5,8 @@
 		let time = document.querySelector("#time");
 		time.min = new Date().toISOString().split(".")[0];
 		let submitButton = document.querySelector("#submit");
+		let form = document.querySelector("#newItem");
+		let addButton = document.querySelector("#addButton");
 		let nextId = 2;
 
 		let dummy = {
@@ -137,11 +139,10 @@
 				let rowId = createWithContent("td", row.id);
 				let rowDesc = createWithContent("td", row.description);
 				let rowPrio = createWithContent("td", prioToString(row.priority));
-				let rowTime = createWithContent("td", new Date(row.time).toDateString());
+				let rowTime = createWithContent("td", new Date(row.time).toUTCString());
 				let rowCompleted = createWithContent("td", row.completed);
-				let rowEdit = document.createElement("td");
+				let rowButtons = document.createElement("td");
 				let editButton = createWithContent("button", "edit");
-				let rowDelete = document.createElement("td");
 				let deleteButton = createWithContent("button", "delete");
 				deleteButton.addEventListener ("click", (event) => {
 						tr.remove();
@@ -157,18 +158,17 @@
 						}).then(data => console.log(data))
 								.catch(err => console.error(err));
 				});
-				rowDelete.appendChild(deleteButton);
 				editButton.addEventListener("click", (event) => {
 						editRow(tr, row);
 				});
-				rowEdit.appendChild(editButton);
+				rowButtons.appendChild(editButton);
+				rowButtons.appendChild(deleteButton);
 				tr.appendChild(rowId);
 				tr.appendChild(rowDesc);
 				tr.appendChild(rowPrio);
 				tr.appendChild(rowTime);
 				tr.appendChild(rowCompleted);
-				tr.appendChild(rowEdit);
-				tr.appendChild(rowDelete);
+				tr.appendChild(rowButtons);
 				return tr;
 		}
 
@@ -221,5 +221,9 @@
 								}
 						});
 		}
+
+		addButton.addEventListener("click", (event) => {
+				form.classList.toggle("hidden");
+		});
 
 })();
