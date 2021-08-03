@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>To-Do List</title>
+        <link href="css/style.css" rel="stylesheet"/>
+    </head>
+    <body>
+      <header>
+          <h1>To-Do List</h1>
+      </header>
+      <button id="addButton">Add item</button>
+      <form id="newItem" action="" class="hidden">
+          <label for="description">Description</label>
+          <input name="description" type="text" value="" id="description" required/>
+          <label for="priority">Priority</label>
+          <select id="priority" name="priority" required>
+              <option value="1">Highest</option>
+              <option value="2">High</option>
+              <option value="3">Medium</option>
+              <option value="4">Low</option>
+              <option value="5">Lowest</option>
+          </select>
+          <label for="time">Due</label>
+          <input name="time" type="datetime-local" value="" id="time"/>
+          <button id="submit">Submit</button>
+      </form>
+      <table id="list">
+        <tr class="header">
+            <th>Id</th>
+            <th>Description</th>
+            <th>Priority</th>
+            <th>Due</th>
+            <th>Completed</th>
+            <th></th>
+        </tr>
+      </table>
+      <script src="js/index.js">
+      </script>
+    </body>
+</html>
