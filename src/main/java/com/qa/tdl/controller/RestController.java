@@ -41,7 +41,6 @@ public class RestController{
 
 		HttpHeaders headers = getHeaders();
 		ResponseEntity<List<ToDoItem>> res = new ResponseEntity<>(items, headers, HttpStatus.OK);
-		System.out.println(res);
 		return res;
 	}
 
@@ -62,6 +61,9 @@ public class RestController{
 		ToDoItem updatedItem = service.updateById(id, item);
 
 		HttpHeaders headers = getHeaders();
+		if(updatedItem == null){
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 		return new ResponseEntity<ToDoItem>(updatedItem, headers, HttpStatus.OK);
 	}
 
@@ -78,13 +80,8 @@ public class RestController{
 
 	@PostMapping("/create")
 	public ResponseEntity<ToDoItem> create(@Valid @RequestBody ToDoItem item){
-		System.out.println(item);
 		ToDoItem createdItem = service.create(item);
 		HttpHeaders headers = getHeaders();
-		
-		if(createdItem == null){
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
 		return new ResponseEntity<ToDoItem>(createdItem, headers, HttpStatus.CREATED);
 	}
 }
