@@ -21,6 +21,9 @@ public class TodoService{
 	}
 
 	public ToDoItem getById(Long id){
+		if(!repository.existsById(id)){
+			return null;
+		}
 		return repository.getById(id);
 	}
 
