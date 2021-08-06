@@ -21,19 +21,14 @@
 				switch(priority){
 				case 1:
 				case "1": return "Highest";
-						break;
 				case 2:
 				case "2": return "High";
-						break;
 				case 3:
 				case "3": return "Medium";
-						break;
 				case 4:
 				case "4": return "Low";
-						break;
 				case 5:
 				case "5": return "Lowest";
-						break;
 				default: console.error(`${priority} is not a valid value for priority`);
 						return "ERROR";
 				}
@@ -69,12 +64,12 @@
 								case 1: 
 										newValue = document.createElement("input");
 										newValue.value = rowObj.description;
-								newValue.id = `edited-description-${rowObj.id}`;
+										newValue.id = `edited-description-${rowObj.id}`;
 										break;
 								case 2:
 										newValue = makePrioElement();
 										newValue.value = rowObj.priority;
-								newValue.id = `edited-priority-${rowObj.id}`;
+										newValue.id = `edited-priority-${rowObj.id}`;
 										break;
 								case 3:
 										newValue = document.createElement("input");
@@ -118,7 +113,8 @@
 								else{
 										return response.json();
 								}
-						}).then(returnedData => {
+						}).catch(err => list.replaceChild(tr, makeElement(data)))
+								.then(returnedData => {
 								console.log(returnedData);	
 						}).catch(err => console.log(err));
 				});
@@ -170,23 +166,28 @@
 				const body = createData();
 				let demoData = body;
 				demoData.id = nextId++;
-				list.appendChild(makeElement(demoData));
+				let element = makeElement(demoData);
+				list.appendChild(element);
 				fetch("http://localhost:8000/create", {
 						method: "POST",
 						headers: {
 								"Content-type": "application/json"
 						},
 						body: JSON.stringify(body)
-				}).then(response => {
-						if(response.status !== 201){
-								console.error(response.status);
-						}
-						else{
-								return response.json();
-						}
-				}).then(data => {
-						console.log(data);	
-				}).catch(err => console.error(err));
+				})
+						.then(response => {
+								if(response.status !== 201){
+										console.error(response.status);
+								}
+								else{
+										return response.json();
+								}
+						}).catch(err => list.removeChild(element))
+						.then(data => {
+								console.log(data);	
+						}).catch(err => {
+								console.error(err);
+						});
 				console.log(JSON.stringify(demoData));
 		});
 

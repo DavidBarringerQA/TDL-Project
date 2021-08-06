@@ -40,8 +40,7 @@ public class RestController{
 		List<ToDoItem> items = service.getAll();
 
 		HttpHeaders headers = getHeaders();
-		ResponseEntity<List<ToDoItem>> res = new ResponseEntity<>(items, headers, HttpStatus.OK);
-		return res;
+		return new ResponseEntity<>(items, headers, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
@@ -53,7 +52,7 @@ public class RestController{
 		}
 
 		HttpHeaders headers = getHeaders();
-		return new ResponseEntity<ToDoItem>(item, headers, HttpStatus.OK);
+		return new ResponseEntity<>(item, headers, HttpStatus.OK);
 	}
 
 	@PutMapping("/{id}")
@@ -64,16 +63,16 @@ public class RestController{
 		if(updatedItem == null){
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<ToDoItem>(updatedItem, headers, HttpStatus.OK);
+		return new ResponseEntity<>(updatedItem, headers, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Boolean> deleteById(@PathVariable("id") Long id){
-		Boolean result = service.deleteById(id);
+		boolean result = service.deleteById(id);
 
 		HttpHeaders headers = getHeaders();
 		if(result){
-			return new ResponseEntity<Boolean>(result, headers, HttpStatus.OK);
+			return new ResponseEntity<>(result, headers, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
@@ -82,6 +81,6 @@ public class RestController{
 	public ResponseEntity<ToDoItem> create(@Valid @RequestBody ToDoItem item){
 		ToDoItem createdItem = service.create(item);
 		HttpHeaders headers = getHeaders();
-		return new ResponseEntity<ToDoItem>(createdItem, headers, HttpStatus.CREATED);
+		return new ResponseEntity<>(createdItem, headers, HttpStatus.CREATED);
 	}
 }

@@ -21,7 +21,7 @@ import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @Sql(scripts = {"classpath:item-schema.sql", "classpath:item-data.sql"}, executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
 @ActiveProfiles("test")
-public class SeleniumTest{
+class SeleniumTest{
 	
 	private WebDriver driver;
 
@@ -36,7 +36,7 @@ public class SeleniumTest{
 	}
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		ChromeOptions options = new ChromeOptions();
 		options.setHeadless(true);
 		this.driver = new ChromeDriver(options);
@@ -46,51 +46,48 @@ public class SeleniumTest{
 	}
 
 	@Test
-	public void testAdd() throws InterruptedException {
+	void testAdd(){
 		TDLPage page = openPage();
-		Thread.sleep(200);
+		//Thread.sleep(200);
 		page.addItem("TEST", 2, "05122022", "1111");
-		assertEquals(page.getFromList(2, 2), "TEST");
-		assertEquals(page.getFromList(2, 3), "Medium");
-		assertEquals(page.getFromList(2, 5), "false");
+		assertEquals("TEST", page.getFromList(2, 2));
+		assertEquals("Medium", page.getFromList(2, 3));
+		assertEquals("false", page.getFromList(2, 5));
 	}
 
 	@Test
-	public void testEdit() {
+	void testEdit() {
 		TDLPage page = openPage();
 
 		page.editItem("EDITED", 4, 1);
-		assertEquals(page.getFromList(1,2), "EDITED");
-		assertEquals(page.getFromList(1,3), "Lowest");
-		assertEquals(page.getFromList(1,5), "true");
+		assertEquals("EDITED", page.getFromList(1,2));
+		assertEquals("Lowest", page.getFromList(1,3));
+		assertEquals("true", page.getFromList(1,5));
 	}
 
 	@Test
-	public void testDelete() {
+	void testDelete() {
 		TDLPage page = openPage();
 		page.deleteItem();
 		assertThrows(NoSuchElementException.class, () -> { page.getFromList(1,1); });
 	}
 
 	@Test
-	public void testPersists() throws InterruptedException{
+	void testPersists() throws InterruptedException{
 		TDLPage page = openPage();
-		Thread.sleep(100);
 		page.addItem("TEST", 2, "05122022", "1111");
 		Thread.sleep(1000);
 		driver.navigate().refresh();
 		if(page.URL.contains("/imp/")){
 			driver.switchTo().frame(0);
 		}
-		Thread.sleep(5000);
-		assertEquals(page.getFromList(2, 2), "TEST");
-		assertEquals(page.getFromList(2, 3), "Medium");
-		assertEquals(page.getFromList(2, 5), "false");
+		assertEquals("TEST", page.getFromList(2, 2));
+		assertEquals("Medium", page.getFromList(2, 3));
+		assertEquals("false", page.getFromList(2, 5));
 	}
 	
 	@AfterEach
-	public void teardown() throws InterruptedException{
-		//Thread.sleep(1000);
+	void teardown() throws InterruptedException{
 		driver.close();
 	}
 }
