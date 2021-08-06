@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.qa</groupId>
 	<artifactId>tdl</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+	<version>0.0.1</version>
+	<name>TDL Project</name>
+	<description>To-do list project using Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
 		<repackage.classifier/>
@@ -45,12 +45,12 @@
 			<version>${spring-native.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- 	<groupId>org.springframework.boot</groupId> -->
+		<!-- 	<artifactId>spring-boot-devtools</artifactId> -->
+		<!-- 	<scope>runtime</scope> -->
+		<!-- 	<optional>true</optional> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -76,6 +76,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+    <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-java</artifactId>
+        <version>3.141.59</version>
+    </dependency>
 	</dependencies>
 
 	<build>
@@ -138,6 +143,26 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.5</version>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>prepare-agent</goal>
+                </goals>
+                </execution>
+                <!-- attached to Maven test phase -->
+                <execution>
+                    <id>report</id>
+                    <phase>test</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
 		</plugins>
 	</build>
 	<repositories>
