@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
-public class ServiceTest {
+class ServiceTest {
 
 	@MockBean
 	private TodoRepository repository;
@@ -41,7 +41,7 @@ public class ServiceTest {
 
 		Mockito.when(repository.findAll()).thenReturn(items);
 		
-		assertEquals(service.getAll(), items);
+		assertEquals(items, service.getAll());
 		Mockito.verify(repository, Mockito.times(1)).findAll();
 	}
 
@@ -52,7 +52,7 @@ public class ServiceTest {
 		Mockito.when(repository.existsById(1L)).thenReturn(true);
 		Mockito.when(repository.getById(1L)).thenReturn(item);
 
-		assertEquals(service.getById(1L), item);
+		assertEquals(item, service.getById(1L));
 		Mockito.verify(repository, Mockito.times(1)).existsById(1L);
 		Mockito.verify(repository, Mockito.times(1)).getById(1L);
 	}
@@ -64,7 +64,7 @@ public class ServiceTest {
 		Mockito.when(repository.existsById(1L)).thenReturn(true);
 		Mockito.when(repository.saveAndFlush(result)).thenReturn(result);
 
-		assertEquals(service.updateById(1L, result), result);
+		assertEquals(result, service.updateById(1L, result));
 		Mockito.verify(repository, Mockito.times(1)).existsById(1L);
 		Mockito.verify(repository, Mockito.times(1)).saveAndFlush(result);
 	}
@@ -82,7 +82,7 @@ public class ServiceTest {
 	void getByIdFail(){
 		Mockito.when(repository.existsById(1L)).thenReturn(false);
 
-		assertEquals(service.getById(1L), null);
+		assertEquals(null, service.getById(1L));
 		Mockito.verify(repository, Mockito.times(1)).existsById(1L);
 		Mockito.verify(repository, Mockito.times(0)).getById(1L);
 	}
@@ -93,7 +93,7 @@ public class ServiceTest {
 		
 		Mockito.when(repository.existsById(1L)).thenReturn(false);
 
-		assertEquals(service.updateById(1L, item), null);
+		assertEquals(null, service.updateById(1L, item));
 		Mockito.verify(repository, Mockito.times(1)).existsById(1L);
 		Mockito.verify(repository, Mockito.times(0)).saveAndFlush(item);
 	}
@@ -102,7 +102,7 @@ public class ServiceTest {
 	void deleteByIdFail(){
 		Mockito.when(repository.existsById(1L)).thenReturn(false);
 
-		assertEquals(service.deleteById(1L), false);
+		assertEquals(false, service.deleteById(1L));
 		Mockito.verify(repository, Mockito.times(1)).existsById(1L);
 		Mockito.verify(repository, Mockito.times(0)).deleteById(1L);
 	}

@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 @Sql(scripts = {"classpath:item-schema.sql", "classpath:item-data.sql"}, executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class ControllerIntegrationTest {
+class ControllerIntegrationTest {
 
 	@Autowired
 	private MockMvc mock;
