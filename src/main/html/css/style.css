@@ -1,6 +1,6 @@
 #list{
     border: 2px solid #000;
-		margin: auto;
+		margin-left: 2rem;
     width: 80%;
 		border-collapse: collapse;
     margin-top: 2rem;
@@ -31,4 +31,42 @@ h1{
 
 .hidden{
 		display: none;
+}
+
+.completed{
+		background-color: green;
+}
+
+.userInput{
+    margin-top: 3rem;
+		position: fixed;
+		right: 0px;
+		width: 15rem;
+		background-color: #cccccc;
+}
+
+#addButton{
+    margin-top: 2rem;
+		position:fixed;
+		right: 0px;
+}
+
+h1{
+		margin-bottom: 0px;
+}
+
+#message{
+    padding-left: 2rem ;
+		height: 1.5rem;
+    width: 100%;
+}
+
+.success{
+		color: darkgreen;
+    background-color: #f5f5dc;
+}
+
+.error{
+		color: darkred;
+    background-color: #f5f5dc;
 }

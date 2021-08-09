@@ -7,16 +7,19 @@
 		let submitButton = document.querySelector("#submit");
 		let form = document.querySelector("#newItem");
 		let addButton = document.querySelector("#addButton");
-		let nextId = 2;
+		let nextId = 1;
 
-		let dummy = {
-				id: 1,
-				description: "Test item",
-				priority: 2,
-				time: new Date().getTime(),
-				completed: false
+		getData();
+
+		function createMessage(type, content){
+				let message = document.querySelector("#message");
+				message.textContent = content;
+				message.className = type;
+				setTimeout(() => {
+						message.textContent = "";
+						message.className = "";
+				}, 5000);
 		}
-		list.appendChild(makeElement(dummy));
 
 		function createWithContent(type, content){
 				let element = document.createElement(type);
@@ -28,19 +31,14 @@
 				switch(priority){
 				case 1:
 				case "1": return "Highest";
-						break;
 				case 2:
 				case "2": return "High";
-						break;
 				case 3:
 				case "3": return "Medium";
-						break;
 				case 4:
 				case "4": return "Low";
-						break;
 				case 5:
 				case "5": return "Lowest";
-						break;
 				default: console.error(`${priority} is not a valid value for priority`);
 						return "ERROR";
 				}
@@ -76,12 +74,12 @@
 								case 1: 
 										newValue = document.createElement("input");
 										newValue.value = rowObj.description;
-								newValue.id = `edited-description-${rowObj.id}`;
+										newValue.id = `edited-description-${rowObj.id}`;
 										break;
 								case 2:
 										newValue = makePrioElement();
 										newValue.value = rowObj.priority;
-								newValue.id = `edited-priority-${rowObj.id}`;
+										newValue.id = `edited-priority-${rowObj.id}`;
 										break;
 								case 3:
 										newValue = document.createElement("input");
@@ -112,7 +110,7 @@
 						const data = editData(tr, rowObj.id);
 						console.log(data);
 						list.replaceChild(makeElement(data), tr);
-						fetch(`http://localhost:8080/${rowObj.id}`, {
+						fetch(`http://localhost:8000/${rowObj.id}`, {
 								method: "PUT",
 								headers: {
 										"Content-type": "application/json;"
@@ -121,12 +119,18 @@
 						}).then(response => {
 								if(response.status !== 200){
 										console.error(response.status);
+										createMessage("error", "Error occured during edit");
 								}
 								else{
-										response.json();
+										return response.json();
 								}
-						}).then(response => {
-								console.log(response);	
+						}).catch(err => {
+								list.replaceChild(tr, makeElement(data))
+								createMessage("error", "Error occured during edit");
+						})
+								.then(returnedData => {
+										createMessage("success", "Edit successful");
+										console.log(returnedData);	
 						}).catch(err => console.log(err));
 				});
 				confirmRow.appendChild(confirmButton);
@@ -146,17 +150,21 @@
 				let deleteButton = createWithContent("button", "delete");
 				deleteButton.addEventListener ("click", (event) => {
 						tr.remove();
-						fetch(`http://localhost:8080/delete/${row.id}`, {
+						fetch(`http://localhost:8000/${row.id}`, {
 								method: "DELETE"
 						}).then(response => {
 								if(response.status !== 200){
+										createMessage("error", "Error occured trying to delete");
 										console.error(response.status);
 								}
 								else {
-										response.json();
+										createMessage("success", "Deleted");
+										return response.json();
 								}
-						}).then(data => console.log(data))
-								.catch(err => console.error(err));
+						}).catch(err => createMessage("error", "Error occured trying to delete"))
+								.then(data => {
+										console.log(data);
+						}).catch(err => console.error(err));
 				});
 				editButton.addEventListener("click", (event) => {
 						editRow(tr, row);
@@ -169,6 +177,9 @@
 				tr.appendChild(rowTime);
 				tr.appendChild(rowCompleted);
 				tr.appendChild(rowButtons);
+				if(row.completed){
+						tr.classList.add("completed");
+				}
 				return tr;
 		}
 
@@ -177,23 +188,37 @@
 				const body = createData();
 				let demoData = body;
 				demoData.id = nextId++;
-				list.appendChild(makeElement(demoData));
-				fetch("http://localhost:8080/create", {
+				let element = makeElement(demoData);
+				list.appendChild(element);
+				fetch("http://localhost:8000/create", {
 						method: "POST",
 						headers: {
-								"Content-type": "application/json;"
+								"Content-type": "application/json"
 						},
-						body: (JSON.stringify(body))
-				}).then(response => {
-						if(response.status !== 201){
-								console.error(response.status);
-						}
-						else{
-								response.json();
-						}
-				}).then(data => {
-						console.log(data);	
-				}).catch(err => console.error(err));
+						body: JSON.stringify(body)
+				})
+						.then(response => {
+								if(response.status !== 201){
+										createMessage("error", "An error occured while creating item");
+										console.error(response.status);
+										return new Promise((resolve, reject) => reject(-1));
+								}
+								else{
+										return response.json();
+								}
+						}).catch(err => {
+								list.removeChild(element);
+								nextId--;
+								createMessage("error", "An error occured while creating item");
+						})
+						.then(data => {
+								if(data){
+										createMessage("success", "Item created");
+								}
+								console.log(data);	
+						}).catch(err => {
+								console.error(err);
+						});
 				console.log(JSON.stringify(demoData));
 		});
 
@@ -207,19 +232,24 @@
 		}
 
 		function getData(){
-				fetch("http://localhost:8080/")
-						.then(respone => {
+				fetch("http://localhost:8000/")
+						.then(response => {
+								console.log(response);
 								if(response.status !== 200){
+										createMessage("error", "Could not retrieve to-do list");
 										console.error(response.status);
 								}
 								else{
-										response.json();
+										return response.json();
 								}
-						}).then(data => {
+						}).catch(err => createMessage("error", "Could not retrieve to-do list"))
+						.then(data => {
+								console.log(data);
 								for(dataRow of data){
 										list.appendChild(makeElement(dataRow));
+										nextId = dataRow.id + 1;
 								}
-						});
+						}).catch(err => console.error(err));
 		}
 
 		addButton.addEventListener("click", (event) => {
