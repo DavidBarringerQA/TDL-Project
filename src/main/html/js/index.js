@@ -11,6 +11,16 @@
 
 		getData();
 
+		function createMessage(type, content){
+				let message = document.querySelector("#message");
+				message.textContent = content;
+				message.className = type;
+				setTimeout(() => {
+						message.textContent = "";
+						message.className = "";
+				}, 5000);
+		}
+
 		function createWithContent(type, content){
 				let element = document.createElement(type);
 				element.textContent = content;
@@ -109,13 +119,18 @@
 						}).then(response => {
 								if(response.status !== 200){
 										console.error(response.status);
+										createMessage("error", "Error occured during edit");
 								}
 								else{
 										return response.json();
 								}
-						}).catch(err => list.replaceChild(tr, makeElement(data)))
+						}).catch(err => {
+								list.replaceChild(tr, makeElement(data))
+								createMessage("error", "Error occured during edit");
+						})
 								.then(returnedData => {
-								console.log(returnedData);	
+										createMessage("success", "Edit successful");
+										console.log(returnedData);	
 						}).catch(err => console.log(err));
 				});
 				confirmRow.appendChild(confirmButton);
@@ -139,13 +154,17 @@
 								method: "DELETE"
 						}).then(response => {
 								if(response.status !== 200){
+										createMessage("error", "Error occured trying to delete");
 										console.error(response.status);
 								}
 								else {
+										createMessage("success", "Deleted");
 										return response.json();
 								}
-						}).then(data => console.log(data))
-								.catch(err => console.error(err));
+						}).catch(err => createMessage("error", "Error occured trying to delete"))
+								.then(data => {
+										console.log(data);
+						}).catch(err => console.error(err));
 				});
 				editButton.addEventListener("click", (event) => {
 						editRow(tr, row);
@@ -158,6 +177,9 @@
 				tr.appendChild(rowTime);
 				tr.appendChild(rowCompleted);
 				tr.appendChild(rowButtons);
+				if(row.completed){
+						tr.classList.add("completed");
+				}
 				return tr;
 		}
 
@@ -177,13 +199,22 @@
 				})
 						.then(response => {
 								if(response.status !== 201){
+										createMessage("error", "An error occured while creating item");
 										console.error(response.status);
+										return new Promise((resolve, reject) => reject(-1));
 								}
 								else{
 										return response.json();
 								}
-						}).catch(err => list.removeChild(element))
+						}).catch(err => {
+								list.removeChild(element);
+								nextId--;
+								createMessage("error", "An error occured while creating item");
+						})
 						.then(data => {
+								if(data){
+										createMessage("success", "Item created");
+								}
 								console.log(data);	
 						}).catch(err => {
 								console.error(err);
@@ -205,12 +236,14 @@
 						.then(response => {
 								console.log(response);
 								if(response.status !== 200){
+										createMessage("error", "Could not retrieve to-do list");
 										console.error(response.status);
 								}
 								else{
 										return response.json();
 								}
-						}).then(data => {
+						}).catch(err => createMessage("error", "Could not retrieve to-do list"))
+						.then(data => {
 								console.log(data);
 								for(dataRow of data){
 										list.appendChild(makeElement(dataRow));
